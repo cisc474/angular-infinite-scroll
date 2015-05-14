@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fibonacci Numbers</title>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
+        <script src="ng-infinite-scroll.js"></script>
+        <style>
+            .box {
+                background-color: salmon;
+                text-align:center;
+                font-family: Verdana;
+                width:23%;
+                height:100px;
+                float:left;
+                margin:0.5%;
+                padding:0.5%;
+            }
+        </style>
+    </head>
+    <body ng-app="infiniteApp" ng-controller="Ctrl">
+        <div infinite-scroll="moreFib()" infinite-scroll-distance="2">
+            <div ng-repeat="fib in fibs track by $index" class="box">
+                {{fib}}
+            </div>
+        </div>
+    </body>
+    <script>
+        var fibApp = angular.module("infiniteApp", ['infinite-scroll']);
+        fibApp.controller('Ctrl', function($scope){
+            
+            var nextFibs = function(v1, v2, k){
+                var results = [];
+                var pr1 = v1;
+                var pr2 = v2;
+                var temp;
+                for (var i = 0; i < k; i++){
+                    temp = pr2;
+                    pr2 = pr1 + pr2;
+                    results.push(pr2);
+                    pr1 = temp;
+                }
+                return results;
+            };
+            
+            var ff = [1,2];
+            ff = ff.concat(nextFibs(1,2,40));
+            $scope.fibs = ff;
+            $scope.moreFib = function(){
+                var more = nextFibs($scope.fibs[$scope.fibs.length - 2], $scope.fibs[$scope.fibs.length - 1], 40);
+                $scope.fibs = $scope.fibs.concat(more);
+            };
+        });
+    </script>
+</html>
